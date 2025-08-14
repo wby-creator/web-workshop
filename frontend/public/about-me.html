@@ -96,62 +96,6 @@
           width: 100%;
         }
       }
-    /* Dark mode */
-    body.dark {
-      background-color: #1D2129;
-      color: #F2F3F5;
-    }
-    body.dark .bg-white,
-    body.dark .bg-white\/80 {
-      background-color: #1D2129 !important;
-    }
-    body.dark #navbar {
-      background-color: rgba(29,33,41,0.95) !important;
-      border-bottom: 1px solid #272E3B !important;
-    }
-    body.dark .text-dark, body.dark .text-gray-700 {
-      color: #F2F3F5 !important;
-    }
-    body.dark .bg-gray-100 {
-      background-color: #272E3B !important;
-    }
-    body.dark .bg-primary {
-      background-color: #165DFF !important;
-    }
-    body.dark .border-gray-200 {
-      border-color: #272E3B !important;
-    }
-    body.dark .shadow-md {
-      box-shadow: 0 2px 8px rgba(22,93,255,0.15);
-    }
-    body.dark .bg-dark {
-      background-color: #1D2129 !important;
-    }
-    body.dark .text-white {
-      color: #F2F3F5 !important;
-    }
-    body.dark .text-gray-400 {
-      color: #C9CDD4 !important;
-    }
-    body.dark .text-primary {
-      color: #36CFC9 !important;
-    }
-    body.dark .hover\:bg-primary:hover {
-      background-color: #36CFC9 !important;
-      color: #1D2129 !important;
-    }
-    body.dark .hover\:text-primary:hover {
-      color: #36CFC9 !important;
-    }
-    body.dark .bg-primary\/10 {
-      background-color: rgba(54,207,201,0.1) !important;
-    }
-    body.dark .bg-primary\/90 {
-      background-color: rgba(54,207,201,0.9) !important;
-    }
-    body.dark .bg-primary\/5 {
-      background-color: rgba(54,207,201,0.05) !important;
-    }
   </style>
 </head>
 
@@ -159,190 +103,12 @@
   <header class="fixed w-full bg-white/80 backdrop-blur-sm z-50 border-b border-gray-200 transition-all duration-300" id="navbar">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
-        <!-- Logo, Title and Song -->
+        <!-- Logo And Title -->
         <a href="#" class="text-xl font-bold text-primary flex items-center gap-2">
           <span class="bg-primary text-white p-1 rounded">
             <i class="fa fa-bullseye"></i>
           </span>
           <span class="lang-text" data-en="AboutPage" data-zh="我的主页">AboutPage</span>
-          <!-- Music Player -->
-          <div id="music-player" class="flex items-center gap-3 bg-white/80 rounded-full px-3 py-1 shadow border border-gray-200 w-[320px]">
-            <img src="" alt="Song Cover" id="music-cover" class="w-8 h-8 rounded-full object-cover">
-            <div class="flex flex-col min-w-[0]">
-              <!-- Music title -->
-              <div class="song-title-container relative overflow-hidden w-[100px] h-[18px]">
-                <span id="music-title" class="text-sm font-medium text-dark absolute whitespace-nowrap">加载中...</span>
-              </div>
-              <div class="relative w-32 h-2 bg-gray-200 rounded-full mt-1">
-                <div id="music-progress" class="absolute top-0 left-0 h-2 bg-primary rounded-full" style="width: 0%"></div>
-              </div>
-            </div>
-            <button id="music-prev" class="text-gray-500 hover:text-primary px-2" title="上一首">
-              <i class="fa fa-step-backward"></i>
-            </button>
-            <button id="music-play" class="text-gray-500 hover:text-primary px-2" title="播放/暂停">
-              <i class="fa fa-play"></i>
-            </button>
-            <button id="music-next" class="text-gray-500 hover:text-primary px-2" title="下一首">
-              <i class="fa fa-step-forward"></i>
-            </button>
-            <audio id="music-audio" src=""></audio>
-          </div>
-
-          <!-- jsmediatags analysis -->
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
-          <script>
-            const songs = [
-              { src: "./assets/song1.mp3" },
-              { src: "./assets/song2.mp3" },
-              { src: "./assets/song3.mp3" },
-              { src: "./assets/song4.mp3" },
-              { src: "./assets/song5.mp3" },
-              { src: "./assets/song6.mp3" }
-            ];
-
-            let currentSong = 0;
-            let titleScrollInterval = null;
-            const audio = document.getElementById('music-audio');
-            const playBtn = document.getElementById('music-play');
-            const prevBtn = document.getElementById('music-prev');
-            const nextBtn = document.getElementById('music-next');
-            const title = document.getElementById('music-title');
-            const cover = document.getElementById('music-cover');
-            const progress = document.getElementById('music-progress');
-            const titleContainer = document.querySelector('.song-title-container');
-
-            const defaultCover = "./logo.png";
-            const defaultTitle = "Unknown";
-
-            function stopTitleScroll() {
-              if (titleScrollInterval) {
-                clearInterval(titleScrollInterval);
-                titleScrollInterval = null;
-                title.style.transform = 'translateX(0)';
-              }
-            }
-
-            function startTitleScroll() {
-              stopTitleScroll();
-              if (title.offsetWidth <= titleContainer.offsetWidth) {
-                return;
-              }
-              let position = 0;
-              const speed = 1;
-              const containerWidth = titleContainer.offsetWidth;
-              const titleWidth = title.offsetWidth;
-              const maxPosition = containerWidth - titleWidth;
-
-              titleScrollInterval = setInterval(() => {
-                position -= speed;
-                if (position < maxPosition - 50) {
-                  position = containerWidth;
-                }
-                title.style.transform = `translateX(${position}px)`;
-              }, 30);
-            }
-
-            function loadSong(index) {
-              const song = songs[index];
-              audio.src = song.src;
-              title.textContent = "Loading...";
-              cover.src = defaultCover;
-              stopTitleScroll();
-
-              fetch(song.src)
-                .then(response => {
-                  if (!response.ok) throw new Error("无法加载");
-                  return response.blob();
-                })
-                .then(blob => {
-                  jsmediatags.read(blob, {
-                    onSuccess: function(tag) {
-                      let songTitle = tag.tags.title ||
-                                    (tag.tags.artist ? `${tag.tags.artist} - ${tag.tags.album || ''}` : defaultTitle);
-                      title.textContent = songTitle.trim() || defaultTitle;
-
-                      if (tag.tags.picture) {
-                        const { data, format } = tag.tags.picture;
-                        let base64String = '';
-
-                        for (let i = 0; i < data.length; i++) {
-                          base64String += String.fromCharCode(data[i]);
-                        }
-
-                        const imageUrl = `data:${format};base64,${window.btoa(base64String)}`;
-                        cover.src = imageUrl;
-                      } else {
-                        cover.src = defaultCover;
-                      }
-
-                      setTimeout(startTitleScroll, 100);
-                    },
-                    onError: function(error) {
-                      console.log('解析元数据时出错:', error);
-                      title.textContent = defaultTitle;
-                      cover.src = defaultCover;
-                      setTimeout(startTitleScroll, 100);
-                    }
-                  });
-                })
-                .catch(error => {
-                  console.log('获取音频文件时出错:', error);
-                  title.textContent = "加载失败";
-                  cover.src = defaultCover;
-                  setTimeout(startTitleScroll, 100);
-                });
-
-              progress.style.width = '0%';
-            }
-
-            function playPause() {
-              if (audio.paused) {
-                audio.play();
-                playBtn.innerHTML = '<i class="fa fa-pause"></i>';
-              } else {
-                audio.pause();
-                playBtn.innerHTML = '<i class="fa fa-play"></i>';
-              }
-            }
-
-            function nextSong() {
-              currentSong = (currentSong + 1) % songs.length;
-              loadSong(currentSong);
-              audio.play().then(() => {
-                playBtn.innerHTML = '<i class="fa fa-pause"></i>';
-              }).catch(error => {
-                console.log('播放失败:', error);
-              });
-            }
-
-            function prevSong() {
-              currentSong = (currentSong - 1 + songs.length) % songs.length;
-              loadSong(currentSong);
-              audio.play().then(() => {
-                playBtn.innerHTML = '<i class="fa fa-pause"></i>';
-              }).catch(error => {
-                console.log('播放失败:', error);
-              });
-            }
-
-            audio.addEventListener('timeupdate', () => {
-              const percent = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-              progress.style.width = percent + '%';
-            });
-
-            audio.addEventListener('ended', nextSong);
-            playBtn.addEventListener('click', playPause);
-            nextBtn.addEventListener('click', nextSong);
-            prevBtn.addEventListener('click', prevSong);
-
-            window.addEventListener('resize', () => {
-              stopTitleScroll();
-              setTimeout(startTitleScroll, 100);
-            });
-
-            loadSong(currentSong);
-          </script>
         </a>
 
         <!-- Desktop Navigation -->
@@ -358,10 +124,6 @@
             <button class="lang-btn active" data-lang="en">EN</button>
             <button class="lang-btn" data-lang="zh">中文</button>
           </div>
-          <!-- Mode Switch Button -->
-          <button id="theme-toggle-btn" class="ml-4 px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex items-center" title="切换亮/暗模式">
-            <i id="theme-toggle-icon" class="fa fa-moon-o text-gray-500"></i>
-          </button>
         </nav>
 
         <!-- Mobile Language button -->
@@ -375,11 +137,6 @@
             <button class="lang-btn active text-xs" data-lang="en">EN</button>
             <button class="lang-btn text-xs" data-lang="zh">中文</button>
           </div>
-
-          <!-- Mobile Mode Switch -->
-          <button id="theme-toggle-btn-mobile" class="ml-2 px-2 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex items-center" title="切换亮/暗模式">
-            <i id="theme-toggle-icon-mobile" class="fa fa-moon-o text-gray-500"></i>
-          </button>
         </div>
       </div>
 
@@ -924,88 +681,8 @@
       </div>
     </section>
 
-    <!-- Github Section -->
-    <section id="github" class="py-20 bg-white">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-6xl mx-auto">
-          <div class="text-center mb-16">
-            <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-dark mb-4 lang-text" data-en="My GitHub" data-zh="我的GitHub">
-              My GitHub
-            </h2>
-            <p class="text-gray-500 max-w-2xl mx-auto lang-text"
-              data-en="Explore my open source work, contributions, and repositories."
-              data-zh="探索我的开源作品、贡献和仓库。">
-              Explore my open source work, contributions, and repositories.
-            </p>
-            <div class="w-20 h-1 bg-primary mx-auto mt-4"></div>
-          </div>
-          <div id="github-profile" class="flex flex-col md:flex-row items-center gap-12 justify-center"></div>
-          <div id="github-repos" class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </div>
-      </div>
-    </section>
-    <script>
-      async function fetchGithubProfile() {
-        const profileRes = await fetch('https://api.github.com/users/wby-creator');
-        const profile = await profileRes.json();
-        const profileHtml = `
-          <div class="flex flex-col items-center md:items-start md:flex-row gap-8">
-            <img src="${profile.avatar_url}" alt="avatar" class="w-32 h-32 rounded-full shadow-lg mb-4 md:mb-0">
-            <div>
-              <h3 class="text-2xl font-bold text-dark mb-2">${profile.name || profile.login}</h3>
-              <p class="text-gray-500 mb-2">${profile.bio || ''}</p>
-              <div class="flex flex-wrap gap-4 mb-2">
-                <span class="inline-flex items-center px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                  <i class="fa fa-github mr-2"></i>${profile.login}
-                </span>
-                ${profile.location ? `<span class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"><i class="fa fa-map-marker mr-2"></i>${profile.location}</span>` : ''}
-                ${profile.blog ? `<a href="${profile.blog}" target="_blank" class="inline-flex items-center px-3 py-1 bg-gray-100 text-primary rounded-full text-sm hover:bg-primary hover:text-white transition-colors"><i class="fa fa-link mr-2"></i>Blog</a>` : ''}
-              </div>
-              <div class="flex gap-6 text-gray-500 text-sm">
-                <span><i class="fa fa-users mr-1"></i>${profile.followers} Followers</span>
-                <span><i class="fa fa-user-plus mr-1"></i>${profile.following} Following</span>
-                <span><i class="fa fa-book mr-1"></i>${profile.public_repos} Repos</span>
-              </div>
-              <div class="mt-4">
-                <a href="${profile.html_url}" target="_blank" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors lang-text" data-en="View on GitHub" data-zh="访问GitHub">
-                  View on GitHub
-                </a>
-              </div>
-            </div>
-          </div>
-        `;
-        document.getElementById('github-profile').innerHTML = profileHtml;
-      }
-
-      async function fetchGithubRepos() {
-        const reposRes = await fetch('https://api.github.com/users/wby-creator/repos?sort=updated');
-        const repos = await reposRes.json();
-        const reposHtml = repos.slice(0, 6).map(repo => `
-          <div class="bg-gray-100 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between h-full">
-            <div>
-              <h4 class="text-lg font-semibold text-dark mb-2 hover:text-primary transition-colors">
-                <a href="${repo.html_url}" target="_blank">${repo.name}</a>
-              </h4>
-              <p class="text-gray-500 mb-4">${repo.description || ''}</p>
-            </div>
-            <div class="flex items-center justify-between mt-auto pt-2">
-              <span class="inline-flex items-center px-3 py-1 bg-primary/10 text-primary rounded-full text-xs">
-                <i class="fa fa-code mr-1"></i>${repo.language || 'Unknown'}
-              </span>
-              <span class="text-gray-400 text-xs"><i class="fa fa-star mr-1"></i>${repo.stargazers_count}</span>
-              <span class="text-gray-400 text-xs"><i class="fa fa-code-fork mr-1"></i>${repo.forks_count}</span>
-            </div>
-          </div>
-        `).join('');
-        document.getElementById('github-repos').innerHTML = reposHtml;
-      }
-
-      fetchGithubProfile();
-      fetchGithubRepos();
-    </script>
-
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-gray-100">
+    <section id="contact" class="py-20 bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-16">
@@ -1290,29 +967,8 @@
         setLanguage(selectedLang);
       });
     });
-
-    // Mode switch functionality
-    function toggleTheme(isMobile = false) {
-      const body = document.body;
-      const icon = isMobile
-        ? document.getElementById('theme-toggle-icon-mobile')
-        : document.getElementById('theme-toggle-icon');
-      if (body.classList.contains('dark')) {
-        body.classList.remove('dark');
-        icon.classList.remove('fa-sun-o');
-        icon.classList.add('fa-moon-o');
-      } else {
-        body.classList.add('dark');
-        icon.classList.remove('fa-moon-o');
-        icon.classList.add('fa-sun-o');
-      }
-      // Update icons
-      document.getElementById('theme-toggle-icon').className = icon.className;
-      document.getElementById('theme-toggle-icon-mobile').className = icon.className;
-    }
-    document.getElementById('theme-toggle-btn').addEventListener('click', () => toggleTheme(false));
-    document.getElementById('theme-toggle-btn-mobile').addEventListener('click', () => toggleTheme(true));
   </script>
 </body>
 
 </html>
+
